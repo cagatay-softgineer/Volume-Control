@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volume Control</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+        .container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        input[type=range] {
+            width: 80%;
+            margin: 20px auto;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background-color: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background-color: #007bff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #volumeValue {
+            font-size: 16px;
+            color: #333;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Volume Control</h1>
+        <input type="range" id="volume" name="volume" min="0" max="100" step="1" value="50">
+        <span id="volumeValue">50</span>
+        <button id="setVolumeBtn">Set Volume</button>
+    </div>
+
+    <script>
+        // Function to update the range value display
+        function updateRangeValue() {
+            var volume = document.getElementById('volume').value;
+            document.getElementById('volumeValue').innerText = volume;
+        }
+
+        // Event listener for the range input change
+        document.getElementById('volume').addEventListener('input', updateRangeValue);
+
+        // Event listener for the "Set Volume" button click
+        document.getElementById('setVolumeBtn').addEventListener('click', function() {
+            var volume = document.getElementById('volume').value;
+            setVolume(volume);
+        });
+
+        // Function to send volume setting to the server
+        function setVolume(volume) {
+            fetch('/set_volume', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'volume=' + volume
+            }).then(function(response) {
+                if (response.ok) {
+                    console.log('Volume set to ' + volume);
+                } else {
+                    console.error('Failed to set volume');
+                }
+            }).catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        // Initial call to updateRangeValue to display the default value
+        updateRangeValue();
+    </script>
+</body>
+</html>
